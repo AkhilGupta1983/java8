@@ -1,0 +1,187 @@
+package object;
+
+import java.util.EnumMap;
+
+public class ObjectSample {
+
+	public static void main(String args[]) {
+
+		// 1:
+		String str1 = "akhil";
+		String str2 = "akhil";
+
+		System.out.println(" Are equals " + str1.equals(str2));
+		System.out.println(" Are equals " + (str1 == str2));
+
+		String str3 = str1;
+		String str4 = new String("akhil");
+		System.out.println(" Are equals " + str1.equals(str3));// compare by reference
+		System.out.println(" Are equals " + (str1 == str3));
+
+		System.out.println(" Are equals " + (str4 == str3));
+		System.out.println(" Are equals " + (str4.equals(str3)));
+
+		// 2:
+		// user defined
+		String c = "a";
+		Employee employee1 = new Employee(c, 200);
+		Employee employee2 = new Employee("a", 1);
+		Employee employee3 = employee2;
+		// employee2 = employee1;
+
+		// same hashcode if not overridden
+		for (int i = 0; i < 10; i++) {
+			System.out.println(" hashcode is----> " + new Employee("name_" + i, i).hashCode());
+		}
+
+		System.out.println(" Are equals: by method " + (employee1.equals(employee3)));
+		System.out.println(" Are equals: by ref " + (employee1 == employee3));// when equals is not override
+
+		// 3:
+		try {
+			Employee cloneEmployee = (Employee) employee1.clone();
+
+			System.out.println(" Values from clone are: " + cloneEmployee.getName() + " : " + cloneEmployee.getMarks());
+
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// 4. Shallow Copy
+		Department dpt = new Department(111);
+		Employee employee4 = new Employee(c, 200, dpt);
+
+		try {
+			/*
+			 * Employee employeeShallow = (Employee) employee1.clone();
+			 * employee1.setMarks(100);
+			 * 
+			 * System.out.println(" After shallow copy "); System.out.println(" 1: " +
+			 * employee1.getMarks()); System.out.println(" 2: " +
+			 * employeeShallow.getMarks());// the composed values not changing
+			 */
+
+			Employee employeeDeep = (Employee) employee4.clone();
+
+			employee4.getDepartment().setDepId(333);
+			System.out.println(" After Deep copy ");
+
+			System.out.println(" Deep:1: " + employee4.getDepartment().getDepId());
+			System.out.println(" Deep:2 " + employeeDeep.getDepartment().getDepId());
+
+//			return employeeDeep;
+
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}
+
+class Department implements Cloneable {
+
+	private int depId;
+
+	public Department(int depId) {
+		super();
+		this.depId = depId;
+	}
+
+	public int getDepId() {
+		return depId;
+	}
+
+	public void setDepId(int depId) {
+		this.depId = depId;
+	}
+
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
+}
+
+class Employee implements Cloneable {
+
+	private String name;
+	private int marks;
+
+	public Employee(String name, int marks, Department department) {
+		super();
+		this.name = name;
+		this.marks = marks;
+		this.department = department;
+	}
+
+	private Department department;
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getMarks() {
+		return marks;
+	}
+
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+
+	public Employee(String name, int marks) {
+		super();
+		this.name = name;
+		this.marks = marks;
+	}
+
+	/*
+	 * Object default shallow copy
+	 */
+	/*
+	 * @Override public Object clone() throws CloneNotSupportedException { return
+	 * super.clone(); }
+	 */
+	/*
+	 * 
+	 * Deep copy example
+	 */
+	protected Object clone() throws CloneNotSupportedException {
+
+		Employee copiedEmployee = (Employee) super.clone();
+		copiedEmployee.setMarks(this.getMarks());
+
+		return copiedEmployee;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Employee employee = (Employee) o;
+		return marks == employee.marks && name.equals(employee.name);
+	}
+
+	@Override
+	public int hashCode() { // overriding hashcode
+		return this.marks;
+	}
+
+}
