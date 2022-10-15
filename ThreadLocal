@@ -1,0 +1,68 @@
+package object;
+
+public class RaceCondition {
+
+	public static void main(String args[]) {
+
+		Shared shared = new Shared();
+
+		for (int i = 0; i < 5; i++) {
+			Thread t = new Thread(shared);
+			t.start();
+		}
+
+	}
+
+}
+
+class Shared implements Runnable {
+	int marks;
+
+	ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 2);
+
+	ThreadLocal<ThreadLocalClass> threadLocal2 = ThreadLocal.withInitial(() -> new ThreadLocalClass("Sample007", 007));
+
+	@Override
+	public void run() {
+
+		marks += 1;
+		System.out.println(" marks: " + marks);
+		threadLocal.set(threadLocal.get());
+		System.out.println(" 1 ==> " + threadLocal.get());
+
+		ThreadLocalClass threadLocalClass = threadLocal2.get();
+		threadLocalClass.setName(threadLocalClass.getName() + marks);
+
+		System.out.println(" 2 ==> " + threadLocalClass.getName());
+
+	}
+
+}
+
+class ThreadLocalClass {
+	private String name;
+	private int score;
+
+	public ThreadLocalClass(String name, int score) {
+		super();
+		this.name = name;
+		this.score = score;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+}
