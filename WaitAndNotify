@@ -1,0 +1,48 @@
+package object;
+
+public class WaitNotifySample {
+	/*
+	 * No point to Call finalize explicity as its upto JVM when to call GC and prior
+	 * to GC ony its called else is executed as normal method
+	 */
+
+	public static void main(String args[]) {
+		Object o = new Object();
+
+		for (int i = 0; i < 5; i++) {
+			Runnable r = () -> {
+
+				System.out.println(" Thread waiting is   " + Thread.currentThread().getName());
+				try {
+					o.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println(" Thread notified is " + Thread.currentThread().getName());
+
+			};
+
+			Thread t = new Thread(r);
+			t.start();
+		}
+
+		Runnable r = () -> {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			System.out.println(" Object Notified ");
+
+			o.notifyAll();
+
+		};
+
+		Thread t = new Thread(r);
+		t.start();
+
+	}
+
+}
