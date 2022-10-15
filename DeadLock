@@ -1,0 +1,61 @@
+package object;
+
+public class SleepDeadLock {
+	/*
+	 * No point to Call finalize explicity as its upto JVM when to call GC and prior
+	 * to GC ony its called else is executed as normal method
+	 */
+
+	public static void main(String args[]) {
+		Object o = new Object();
+		Object p = new Object();
+
+		Runnable r = () -> {
+
+			synchronized (o) {
+				try {
+					System.out.println(" Producer   " + Thread.currentThread().getName() + " witing");
+					Thread.sleep(3000);
+					synchronized (p) {
+						System.out.println(" Producer " + Thread.currentThread().getName() + " notified");
+
+					}
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			System.out.println(Thread.currentThread().getName() + " Thread resumed ");
+
+		};
+
+		Thread t = new Thread(r);
+		t.setName("Producer");
+		t.start();
+
+		Runnable c = () -> {
+
+			synchronized (o) {
+				System.out.println(" Consumer Thread...............");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				synchronized (p) {
+					System.out.println(" Concumer : c  " + Thread.currentThread().getName());
+
+				}
+				System.out.println(" Consumer Thread resumed...............");
+
+			}
+
+		};
+		Thread ct = new Thread(c);
+		ct.start();
+
+	}
+
+}
