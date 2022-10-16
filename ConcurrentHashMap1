@@ -1,0 +1,35 @@
+package object;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+public class ConcurrentHashMapExample {
+	public static void main(String args[]) {
+		// ConcurrentHashMap<Integer, Integer> concurrentHashMap = new
+		// ConcurrentHashMap<Integer, Integer>();
+		Map<Integer, Integer> concurrentHashMap = new HashMap<>();
+		int j = 0;
+
+		while (j < 6) {
+			concurrentHashMap.put(j, j + 1);
+
+			j++;
+		}
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+		
+		// iteration over map doesn't cause concurrentModificationexception; its the 
+		// iterator
+		for (int i = 0; i <= 5; i++) {
+			int kk = concurrentHashMap.get(i);
+			System.out.println("kk is :: " + kk);
+			if (kk == 3) {
+				concurrentHashMap.remove(i);
+			}
+		}
+		System.out.println("~~~~~~~~~~~~~~");
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+	}
+}
