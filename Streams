@@ -1,0 +1,83 @@
+package object;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class StreamsExample {
+
+	public static void main(String args[]) {
+
+		// Infinite stream
+		/// Stream<Integer> res = Stream.iterate(4, mult -> mult+4);
+		/// res.forEach((v) -> System.out.println(" "+ v));
+
+		List<Integer> lst = Arrays.asList(1, 2, 3, 3, 4, 5, 5);
+		boolean isAllMatch = lst.stream().allMatch(val -> val == 3);
+		System.out.println(" IsAll" + isAllMatch);
+
+		System.out.println(" IsAny " + lst.stream().anyMatch(val -> val == 2));
+
+		lst.stream().distinct().forEach((c) -> System.out.println(" --> " + c));
+
+		// filter
+		// List<Integer> filterdStream = lst.stream().filter((s) -> s ==
+		// 3).collect(Collectors.toList());
+		List<Integer> filterdStream = lst.stream().filter((s) -> s != 3).collect(Collectors.toList());
+
+		filterdStream.forEach((b) -> System.out.println(" ==>  " + b));
+
+		// FlatMap
+		List<String> list = Arrays.asList("Geeks", "GFG", "GeeksforGeeks", "gfg");
+
+		List<Character> s3 = list.stream().flatMap(st -> Stream.of(st.charAt(2))).collect(Collectors.toList());
+		s3.forEach((s4) -> System.out.println(" ------->>>" + s4));
+
+		List<Integer> number = Arrays.asList(2, 3, 4, 5);
+		List<Integer> square = number.stream().map(x -> x * x).collect(Collectors.toList());
+
+		int[] numbers = { 1, 2, 4 };
+		int sum = Arrays.stream(numbers).reduce(0, (b, c) -> b * c);
+
+		System.out.println(" Sum is " + sum);
+
+		List<String> names = Arrays.asList("Melisandre", "Sansa", "Jon", "Daenerys", "Joffery");
+
+		Stream<String> strStream = names.stream().filter(str -> str.length() > 3);
+
+		strStream.forEach((cc) -> System.out.println(" " + cc));
+
+		List<Integer> l2 = Arrays.asList(-9, -18, 0, 25, 4, 5, 6, 7, 6, 6);
+
+		l2.stream().sorted().forEach(System.out::print);
+
+		l2.stream().count();
+		
+		 List<String> items =
+	                Arrays.asList("apple", "apple", "banana",
+	                        "apple", "orange", "banana", "papaya");
+		 
+		 
+		 Map<String,Long> mapp=
+		 items.stream()
+		 		.collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+		 
+		 
+		 mapp.entrySet()
+		 	.stream()
+		 		.forEach((ent) -> System.out.println("key is "+ ent.getKey()+" value is : "+ ent.getValue()));
+		 
+		 
+		 
+		 
+		 
+		 
+
+	}
+
+}
