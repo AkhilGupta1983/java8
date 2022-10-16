@@ -1,0 +1,59 @@
+package object;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+public class ConcurrentHashMapExample {
+	public static void main(String args[]) {
+		// ConcurrentHashMap<Integer, Integer> concurrentHashMap = new
+		// ConcurrentHashMap<Integer, Integer>();
+		Map<Integer, Integer> concurrentHashMap = new HashMap<>();
+		int j = 0;
+
+		while (j < 6) {
+			concurrentHashMap.put(j, j + 1);
+
+			j++;
+		}
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+		
+		
+		// ******** ways to avoid concurrentModificationexception ************/
+		//1:
+		// iteration over map doesn't cause concurrentModificationexception; its the 
+		// iterator
+		for (int i = 0; i <= 5; i++) {
+			int kk = concurrentHashMap.get(i);
+			System.out.println("kk is :: " + kk);
+			if (kk == 3) {
+				concurrentHashMap.remove(i);
+			}
+		}
+		
+		//2:
+		Iterator<Map.Entry<Integer, Integer>> itr = concurrentHashMap.entrySet().iterator();
+		while(itr.hasNext()) {
+			Map.Entry<Integer, Integer> ent = itr.next();
+			if(ent.getKey()==4) {
+				itr.remove();
+			}
+		}
+		
+		System.out.println("~~~~~~~~~~~~~~");
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+		
+		
+		//3:
+		System.out.println("~~~~~~~~~~~~~3------~");
+		
+		concurrentHashMap.keySet().removeIf(k ->k==3);
+		
+		
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+		
+		
+	}
+}
