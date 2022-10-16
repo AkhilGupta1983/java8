@@ -1,0 +1,44 @@
+package object;
+
+import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class ExecutorsExample {
+
+	public static void main(String args[]) {
+
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.submit(() -> {
+			String threadName = Thread.currentThread().getName();
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.out.println("Hello " + threadName);
+		});
+		
+		
+		executor.shutdown();
+		try {
+			System.out.println(" Waiting for timeout to appears....");
+			executor.awaitTermination(3, TimeUnit.SECONDS);
+			//executor.shutdownNow();// cause sleep Interuppted exception; 
+			// thus put in executor terminated check
+			if(executor.isTerminated()) {
+				executor.shutdownNow();
+			}
+			System.out.println(" After timeout has reached....");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}
