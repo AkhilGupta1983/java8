@@ -1,0 +1,55 @@
+package object;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+
+public class ConcurrentHashMapExample {
+	public static void main(String args[]) {
+		// ConcurrentHashMap<Integer, Integer> concurrentHashMap = new
+		// ConcurrentHashMap<Integer, Integer>();
+		Map<Integer, Integer> concurrentHashMap = new HashMap<>();
+		int j = 0;
+
+		while (j < 20) {
+			concurrentHashMap.put(j, j + 1);
+			j++;
+		}
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+
+		for (int i = 0; i < 20; i++) {
+			Thread t = new MyThread(concurrentHashMap);
+			t.start();
+		}
+
+		System.out.println("After Access...........");
+		concurrentHashMap.entrySet().forEach(ee -> System.out.println("  " + ee.getKey()));
+
+	}
+
+}
+
+class MyThread extends Thread {
+
+	Map<Integer, Integer> map;
+
+	public MyThread(Map<Integer, Integer> map) {
+		super();
+		this.map = map;
+	}
+
+	public void run() {
+		System.out.println("----------------");
+		Iterator<Map.Entry<Integer, Integer>> itr = map.entrySet().iterator();
+		while (itr.hasNext()) {
+			Map.Entry<Integer, Integer> ent = itr.next();
+			if (ent.getKey() == 13) {
+				// itr.remove(); // iterator doesn;t throw modificationException
+				//map.remove(13); // directly accessing map causes exception
+				 map.remove(ent.getKey());// in multithreaded; this also causes exception BUT NOT in singlethreaded
+			}
+		}
+
+	}
+}
