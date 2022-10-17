@@ -1,0 +1,145 @@
+package object;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class CallableAndFutureExample {
+	static ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+	public static void main(String args[]) {
+		CallableAndFutureExample example = new CallableAndFutureExample();
+
+		long taskStartTime = System.nanoTime();
+		Future<Shared> res = example.createName(100, "Akkhil");
+		while (!res.isDone()) {
+			System.out.println(" waiting..............");
+			long endTime = System.nanoTime();
+			double elapsedTimeInSec = (endTime - taskStartTime) / 1000000000.0;
+		/*	if (elapsedTimeInSec > 1) {
+				System.out.println("Cancel the task now.. ");
+				res.cancel(true);
+				System.out.println("TASK CANCELED...");
+				//return;
+			}
+   */
+		}
+		try {
+			System.out.println(" Ans is " + res.get().toString());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		String result = example.invokeTasks();
+
+		System.out.println(" result is " + result);
+		executorService.shutdownNow();
+
+	}
+
+	public Future<Shared> createName(Integer score, String name) {
+		return executorService.submit(() -> {
+			Thread.sleep(1000);
+			Shared shared = new Shared(score, name);
+			return shared;
+		});
+	}
+
+	public String invokeTasks() {
+
+		String answer = "";
+		Callable<String> call1 = () -> {
+			Thread.sleep(1000);
+			return "call1 response";
+		};
+
+		Callable<String> call2 = () -> {
+			Thread.sleep(2000);
+			return "call2 response";
+		};
+
+		Callable<String> call3 = () -> {
+			Thread.sleep(3000);
+			return "call3 response";
+		};
+
+		try {
+			System.out.println("-------invoke any-------");
+			answer = executorService.invokeAny(Arrays.asList(call1, call2, call3));
+		
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return answer;
+	}
+
+	
+	
+	public List<String> invokeAllTasks() {
+
+		List<String> answer = new ArrayList<>();
+		Callable<String> call1 = () -> {
+			Thread.sleep(1000);
+			return "call1 response";
+		};
+
+		Callable<String> call2 = () -> {
+			Thread.sleep(2000);
+			return "call2 response";
+		};
+
+		Callable<String> call3 = () -> {
+			Thread.sleep(3000);
+			return "call3 response";
+		};
+
+		try {
+			System.out.println("-------invoke any-------");
+			//answer = executorService.invokeAny(Arrays.asList(call1, call2, call3));
+			List<Future<String>> answerAll = executorService.invokeAll(Arrays.asList(call1, call2, call3));
+			
+			for(Future f : answerAll){
+				System.out.println(" ans is ::: "+ f.get());
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return answer;
+	}
+	
+	
+}
+
+class Shared {
+	private int score;
+	private String name;
+
+	public Shared(int score, String name) {
+		super();
+		this.score = score;
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Shared [score=" + score + ", name=" + name + "]";
+	}
+
+}
