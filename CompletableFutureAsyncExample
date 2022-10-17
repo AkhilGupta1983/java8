@@ -1,0 +1,55 @@
+package object;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
+import javax.annotation.processing.Completion;
+
+public class CompletableFutureExample {
+
+	public static void main(String args[]) throws InterruptedException, ExecutionException {
+
+		CompletableFutureExample example = new CompletableFutureExample();
+		example.testString();
+
+		System.out.println("Main thread completed...........");
+
+	}
+
+	public Void testString() throws InterruptedException, ExecutionException {
+		CompletableFuture<Void> runAyncSample = CompletableFuture.runAsync(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(" Entering the async method..............");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
+		try {
+			return runAyncSample.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return runAyncSample.get();
+	}
+
+}
