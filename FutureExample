@@ -1,0 +1,50 @@
+package object;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+
+public class CallableAndFutureExample {
+	ExecutorService executorService = Executors.newSingleThreadExecutor();
+	public static void main(String args[]) {
+		CallableAndFutureExample example = new CallableAndFutureExample();
+		Future<Shared> res = example.createName(100, "Akkhil");
+		while (!res.isDone()) {
+			System.out.println(" waiting..............");
+		}
+		try {
+			System.out.println(" Ans is " + res.get().toString());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Future<Shared> createName(Integer score, String name) {
+		return executorService.submit(() -> {
+			Thread.sleep(4000);
+			Shared shared = new Shared(score, name);
+			return shared;
+		});
+	}
+}
+
+class Shared {
+	private int score;
+	private String name;
+
+	public Shared(int score, String name) {
+		super();
+		this.score = score;
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Shared [score=" + score + ", name=" + name + "]";
+	}
+
+}
