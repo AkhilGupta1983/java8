@@ -1,0 +1,64 @@
+package object;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+
+import javax.annotation.processing.Completion;
+
+public class GenericsExample {
+
+	public static void main(String args[]) throws InterruptedException, ExecutionException {
+
+		List<Dummy> dummyList = new ArrayList<Dummy>();
+		dummyList.add(new Dummy(1));
+		dummyList.add(new SubDummy(2));
+		create(dummyList);
+	}
+
+	public static void create(List<? extends Dummy> num) {
+
+		num.forEach((val) -> System.out.println(" " + val));
+
+	}
+
+}
+
+class SubDummy extends Dummy {
+
+	public SubDummy(int id) {
+		super(id);
+		// TODO Auto-generated constructor stub
+	}
+
+}
+
+class Dummy {
+	private int id;
+
+	private String name;
+
+	public Dummy(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Dummy [id=" + id + ", name=" + name + "]";
+	}
+
+	public Dummy(int id) {
+		super();
+		this.id = id;
+	}
+
+}
