@@ -1,46 +1,31 @@
 package object;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.function.Supplier;
 
-import javax.annotation.processing.Completion;
+public class AsyncSample {
 
-public class CompletableFutureExample {
+	/*
+	 * CompletableFuture then Apply Example
+	 */
+	public static void withApplyMethod() {
+		String userName = "akkhil";
 
-	public static void main(String args[]) throws InterruptedException, ExecutionException {
-
-		CompletableFutureExample example = new CompletableFutureExample();
-		example.testString();
-
-		System.out.println("Main thread completed...........");
-
-	}
-
-	public Void testString() throws InterruptedException, ExecutionException {
-		CompletableFuture<Void> runAyncSample = CompletableFuture.runAsync(new Runnable() {
-
-			@Override
-			public void run() {
-				System.out.println(" Entering the async method..............");
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+		CompletableFuture<String> welcomeFuture = CompletableFuture.supplyAsync(() -> {
+			return userName;
+		}).thenApply(name -> {
+			return "Hello " + name;
+		}).thenApply(greeting -> {
+			return greeting + "Welcome to my blog!!!";
 		});
 
 		try {
-			return runAyncSample.get();
+			System.out.println("Full response : " + welcomeFuture.get());
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,7 +34,97 @@ public class CompletableFutureExample {
 			e.printStackTrace();
 		}
 
-		return runAyncSample.get();
+	}
+
+	public static void main(String args[]) {
+
+		// 1:
+		CompletableFuture<Void> cf = CompletableFuture.runAsync(() -> {
+
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Thread is " + Thread.currentThread().getName());
+		});
+
+		// 2:
+		ExecutorService service = Executors.newFixedThreadPool(5);
+		CompletableFuture<Void> cf1 = CompletableFuture.runAsync(() -> {
+
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Thread is>> " + Thread.currentThread().getName());
+		}, service);
+
+		System.out.println(" <-------------- suppluAync----------------------->");
+
+		// 3:
+		CompletableFuture<Data> cf2 = CompletableFuture.supplyAsync(new Supplier<Data>() {
+			public Data get() {
+				return new Data("akkhil");
+			}
+		});
+
+		Data result = null;
+		try {
+			result = cf2.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(" result is " + result.toString());
+
+		// 4:
+		List<Data> st = new ArrayList<>();
+		CompletableFuture<Data> cf3 = CompletableFuture.supplyAsync(new Supplier<Data>() {
+			public Data get() {
+				return new Data("akkhil");
+			}
+		}, service);
+
+		Data inRes = null;
+		try {
+			inRes = cf3.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		st.add(inRes);
+
+		st.forEach((a) -> System.out.println("==> " + a));
+
+		System.out.println(" With Apply method........");
+		// 5:
+		withApplyMethod();
+
+	}
+
+}
+
+class Data {
+	private String name;
+
+	public Data(String name) {
+		super();
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Data [name=" + name + "]";
 	}
 
 }
