@@ -1,0 +1,69 @@
+package object;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
+
+public class AsyncSample {
+
+	/*
+	 * CompletableFuture then Apply Example
+	 */
+	public static String withApplyMethod(String un) throws InterruptedException, ExecutionException {
+		String userName = un;
+
+		CompletableFuture<String> welcomeFuture = CompletableFuture.supplyAsync(() -> {
+			return userName;
+		}).thenApply(name -> {
+			return "Hello " + name;
+		}).thenApply(greeting -> {
+			return greeting + "Welcome to my blog!!!";
+		});
+
+		
+		
+		return welcomeFuture.get();
+
+	}
+
+	public static void main(String args[]) throws InterruptedException, ExecutionException {
+		
+		String first = withApplyMethod("akkhil");
+		String middle = withApplyMethod("Kumar");
+		String third = withApplyMethod("Gupta");
+		
+		CompletableFuture<String>
+			finalName = CompletableFuture.supplyAsync(() ->{
+				return "";
+			});
+		
+		CompletableFuture<String> completeName = finalName.thenCombine(first, () -> {
+			return middle+third;
+		})
+		
+		
+		
+		
+
+	}
+
+}
+
+class Data {
+	private String name;
+
+	public Data(String name) {
+		super();
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Data [name=" + name + "]";
+	}
+
+}
