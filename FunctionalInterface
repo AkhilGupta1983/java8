@@ -1,0 +1,78 @@
+package collectionsPackage;
+
+//https://docs.oracle.com/javase/tutorial/essential/concurrency/
+public class CollSample {
+
+	public static void main(String arsg[]) {
+
+		TestInt in = new TestIntImpl();
+		System.out.println(" " + in.score());
+
+		in.abstractMethod();
+		in.abstractMethod1();
+
+		System.out.println("default 1: " + in.score());
+
+		System.out.println(" static " + TestInt.demo());
+
+		System.out.println(" static " + TestInt.demo1());
+
+		System.out.println(" Default 2:  " + in.nation());
+
+		FunctionInter functionalInterface = () -> {
+			return 555;
+		};
+
+		System.out.println(" Functiona interf return " + functionalInterface.funcScore());
+
+	}
+
+}
+
+// Functional Interface
+//@FunctionalInterface
+
+@FunctionalInterface
+interface FunctionInter {
+	public int funcScore();
+}
+
+interface TestInt {
+	public default int score() {
+		return 11;
+	}
+
+	public default String nation() {
+		return "India";
+	}
+
+	public static String demo() {
+		return "Demo";
+	}
+
+	public static String demo1() {
+		return "Demo1";
+	}
+
+	public void abstractMethod();
+
+	public void abstractMethod1();
+}
+
+class TestIntImpl implements TestInt {
+	public int score() {
+		return 22;
+	}
+
+	@Override
+	public void abstractMethod() {
+		System.out.println("abstrat 1: ");
+
+	}
+
+	@Override
+	public void abstractMethod1() {
+		System.out.println("abstract : 2");
+
+	}
+}
