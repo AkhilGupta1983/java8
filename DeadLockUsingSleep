@@ -1,0 +1,60 @@
+package collectionsPackage;
+
+//https://docs.oracle.com/javase/tutorial/essential/concurrency/
+public class CollSample {
+
+	public static void main(String arsg[]) {
+
+		Object obj = new Object();
+		Object obj1 = new Object();
+
+		Runnable r1 = new Runnable() {
+
+			@Override
+			public void run() {
+				synchronized (obj) {
+					try {
+						System.out.println(" Thread " + Thread.currentThread().getName() + " optained lock : obj");
+						Thread.sleep(200);
+						synchronized (obj1) {
+							System.out.println(" Thread " + Thread.currentThread().getName() + " optained lock : obj1");
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println(" Thread resumed is " + Thread.currentThread().getName());
+				}
+			}
+		};
+
+		Thread t1 = new Thread(r1);
+		t1.setName(" Thread_1 ");
+		t1.start();
+
+		Runnable r2 = new Runnable() {
+
+			@Override
+			public void run() {
+				synchronized (obj) {
+					try {
+						System.out.println(" Thread " + Thread.currentThread().getName() + " optained lock : obj");
+						Thread.sleep(200);
+						synchronized (obj1) {
+							System.out.println(" Thread " + Thread.currentThread().getName() + " optained lock : obj1");
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println(" Thread resumed is " + Thread.currentThread().getName());
+				}
+			}
+		};
+		Thread t2 = new Thread(r2);
+		t2.setName(" Thread_2 ");
+		t2.start();
+
+	}
+
+}
