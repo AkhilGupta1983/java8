@@ -1,0 +1,65 @@
+package collectionsPackage;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import javax.swing.ToolTipManager;
+
+//https://docs.oracle.com/javase/tutorial/essential/concurrency/
+public class CollSample {
+
+	public static void main(String arsg[]) {
+		List<Integer> lst = Arrays.asList(1, 2, 3, 4, 4, 5, 5, 5);
+
+		List<Integer> lst1 = lst.stream().filter(val -> val % 2 == 0).collect(Collectors.toList());
+
+		lst1.forEach(v -> System.out.print(v));
+		System.out.println(" ---------------");
+
+		List<Integer> lst2 = lst.stream().distinct().collect(Collectors.toList());
+
+		lst2.forEach(v -> System.out.print(v));
+		System.out.println(" ---------------");
+
+		List<Integer> lst3 = lst.stream().map(x -> x * x).sorted().collect(Collectors.toList());
+
+		lst3.forEach(v -> System.out.print(v));
+		System.out.println(" ---------------");
+
+		int sum = lst.stream().reduce(0, (ans, i) -> ans + i);
+		System.out.println(" -------sum --------" + sum);
+
+		Set<Integer> st = lst.stream().map(v -> v * v).collect(Collectors.toSet());
+
+		st.forEach((ans) -> System.out.println(" > " + ans));
+		System.out.println(" ---------------");
+
+		Map<Integer, Long> mp = lst.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		mp.forEach((k, v) -> System.out.println(" k: " + k + " v: " + v));
+
+		List<String> lstOfString = Arrays.asList("akhil", "kumar", "gupta");
+
+		/*
+		 * Optional<String> res = lstOfString.stream()
+		 * .collect(maxBy(Comparator.naturalOrder()));
+		 * 
+		 */
+
+		// predicate sample
+	
+
+		Predicate<Integer> lessThan = i -> (i < 10);
+
+		System.out.println(" predicate sample " + lessThan.test(9));
+		System.out.println(" predicate sample " + lessThan.test(11));
+
+	}
+
+}
