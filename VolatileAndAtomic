@@ -1,34 +1,31 @@
-package object;
+package concurrency;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RaceCondition {
+public class VolatileSample {
 
-	public static void main(String args[]) {
+	volatile int val;
+	static AtomicInteger atomicInteger = new AtomicInteger();
+	public static void main(String args[]) throws InterruptedException {
 
-		Shared shared = new Shared();
+		MyThread myThread = new MyThread();
 
 		for (int i = 0; i < 100; i++) {
-			Thread t = new Thread(shared);
+			Thread t = new Thread(myThread);
 			t.start();
 		}
 
 	}
-
 }
 
-class Shared implements Runnable {
-	// volatile int marks=1; example of volatile
-	int marks = 1;
+class MyThread implements Runnable {
 
 	AtomicInteger atomicInteger = new AtomicInteger(1);
 
 	@Override
 	public void run() {
-
-		// marks +=2;
-		atomicInteger.getAndAdd(2);
-		System.out.println("marks are " + atomicInteger.get());
+		// atomicInteger.getAndIncrement();
+		System.out.println(" val is " + atomicInteger.getAndIncrement());
 
 	}
 
