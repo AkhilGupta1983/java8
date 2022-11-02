@@ -1,0 +1,38 @@
+static Lock l1 = new ReentrantLock();
+	static Lock l2 = new ReentrantLock();
+
+	public static void main(String args[]) {
+
+		new Thread(() -> {
+			synchronized (l1) {
+				System.out.println(" thread " + Thread.currentThread().getName() + " holding l1");
+
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				synchronized (l2) {
+					System.out.println(" thread " + Thread.currentThread().getName() + " holding l2");
+				}
+			}
+
+		}).start();
+
+		new Thread(() -> {
+			synchronized (l1) {
+				System.out.println(" thread " + Thread.currentThread().getName() + " holding l1");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				synchronized (l2) {
+					System.out.println(" thread " + Thread.currentThread().getName() + " holding l2");
+				}
+			}
+
+		}).start();
