@@ -1,62 +1,49 @@
-package collectionsPackage;
+package threadSample;
 
-import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
-//https://docs.oracle.com/javase/tutorial/essential/concurrency/
-public class CollSample {
+public class ThreadSample {
 
-	public static void main(String arsg[]) {
+	public static void main(String args[]) {
 
-		LinkedBlockingQueue<Integer> q = new LinkedBlockingQueue();
+		BlockingQueue<Integer> queue = new LinkedBlockingQueue<Integer>();
 
-		Runnable r1 = new Runnable() {
-			int val = 1;
-
-			@Override
-			public void run() {
-				while (true) {
-
-					System.out.println("Produced---->  " + val);
-					try {
-						q.put(val++);
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		Runnable producer = () -> {
+			int i = 1;
+			while (true) {
+				try {
+					queue.put(i);
+					System.out.println(" Added " + i + " to queue ");
+					i++;
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
+
 		};
 
-		Thread producer = new Thread(r1);
-		producer.setName("--Producer--");
-		producer.start();
+		new Thread(producer).start();
 
-		Runnable r2 = new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					int read = 0;
-					try {
-						read = q.take();
-						
-						Thread.sleep(2000);
-						
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println(" Consumed  " + read);
+		Runnable consumer = () -> {
+			while (true) {
+				try {
+					int readValue = queue.take();
+					System.out.println(" read value  " + readValue + " from queue ");
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-
 			}
+
 		};
 
-		Thread consumer = new Thread(r2);
-		consumer.setName("--consumer--");
-		consumer.start();
+		new Thread(consumer).start();
+
 	}
+
 }
