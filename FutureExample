@@ -1,50 +1,83 @@
-package object;
+package threadSample;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+class Resource {
 
-public class CallableAndFutureExample {
-	ExecutorService executorService = Executors.newSingleThreadExecutor();
-	public static void main(String args[]) {
-		CallableAndFutureExample example = new CallableAndFutureExample();
-		Future<Shared> res = example.createName(100, "Akkhil");
-		while (!res.isDone()) {
-			System.out.println(" waiting..............");
+	public static synchronized void iterator() {
+		// synchronized (Resource.class) { // class level synchronized
+		// synchronized (this) { // object level
+		for (int i = 1; i < 5; i++) {
+			System.out.println("=========> " + Thread.currentThread().getName());
 		}
+
 		try {
-			System.out.println(" Ans is " + res.get().toString());
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public Future<Shared> createName(Integer score, String name) {
-		return executorService.submit(() -> {
-			Thread.sleep(4000);
-			Shared shared = new Shared(score, name);
-			return shared;
-		});
-	}
+//	}
+
 }
 
-class Shared {
-	private int score;
-	private String name;
+class MyCallable implements Callable<Integer> {
 
-	public Shared(int score, String name) {
-		super();
-		this.score = score;
-		this.name = name;
-	}
+	int val = 0;
 
 	@Override
-	public String toString() {
-		return "Shared [score=" + score + ", name=" + name + "]";
+	public Integer call() throws Exception {
+		// TODO Auto-generated method stub
+		return val++;
 	}
 
+}
+
+public class ThreadSample {
+	public static void main(String args[]) {
+		MyCallable myCallable = new MyCallable();
+
+		List<Future<Integer>> res = new ArrayList<>();
+
+		ExecutorService service = Executors.newFixedThreadPool(5);
+
+		for (int i = 0; i < 5; i++) {
+			Future<Integer> f = service.submit(myCallable);
+			while (!f.isDone()) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(" Waiting.........");
+			}
+
+			res.add(f);
+
+		}
+
+		res.forEach((ans) -> {
+			try {
+				System.out.println(" ---> " + ans.get());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+
+		// System.out.println(" Cllable NOT done ");
+
+	}
 }
