@@ -1,0 +1,80 @@
+
+public class CloneSample {
+
+	public static void main(String args[]) {
+
+		Student original = new Student(1);
+
+		try {
+			School school = new School();
+			school.setSchoolName("oak");
+			original.setSchool(school);
+			Student clStudent = (Student) original.clone();
+
+			System.out.println("1 " + original.getScore() + " : " + original.getSchool().getSchoolName());
+			System.out.println("2 " + original.getScore() + " : " + clStudent.getSchool().getSchoolName());
+			original.getSchool().setSchoolName("DPS");
+
+			System.out.println("3 " + original.getScore() + " : " + original.getSchool().getSchoolName());
+			System.out.println("4 " + original.getScore() + " : " + clStudent.getSchool().getSchoolName());
+
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}
+
+class School implements Cloneable {
+
+	private String schoolName;
+
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+}
+
+class Student implements Cloneable {
+
+	private int score;
+
+	private School school;
+
+	public Student(int score) {
+		super();
+		this.score = score;
+	}
+
+	public School getSchool() {
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	protected Object clone() throws CloneNotSupportedException {
+		Student student = (Student) super.clone();
+		student.setSchool((School) school.clone());
+		return student;
+	}
+
+}
