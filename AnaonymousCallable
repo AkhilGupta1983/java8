@@ -1,0 +1,66 @@
+package thread;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ThreadSample {
+	public static void main(String args[]) {
+		Lock l = new ReentrantLock();
+		ExecutorService service = Executors.newCachedThreadPool();
+
+		List<Future<String>> res = new ArrayList<Future<String>>();
+
+		for (int i = 0; i < 5; i++) {
+			Future<String> a = service.submit(() -> {
+				synchronized (l) {
+					try {
+						System.out.println(" Thread entering wait state " + Thread.currentThread().getName());
+						l.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println("Thread resumed is " + Thread.currentThread());
+				}
+				return "Sample" + Thread.currentThread().getName();
+			});
+
+			res.add(a);
+		}
+
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		new Thread(() -> {
+			synchronized (l) {
+				System.out.println(" Notified ");
+				l.notifyAll();
+			}
+
+		}).start();
+
+		res.forEach(ans -> {
+			try {
+				System.out.println(" ---> " + ans.get());
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+
+	}
+}
