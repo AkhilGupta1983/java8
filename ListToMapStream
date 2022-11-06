@@ -1,0 +1,122 @@
+package streams;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class StreamSample {
+
+	public static void main(String args[]) {
+
+		// frequency map
+		Stream<Integer> stream = Arrays.asList(1, 2, 3, 2, 3, 4, 6, 6, 6, 6, 6, 5, 4, 5, 7, 2, 88, 34, 99, 11).stream();
+
+		Map<Integer, Long> map = stream
+				.collect(Collectors.groupingBy(Function.identity(), HashMap::new, Collectors.counting()));
+
+		int max = map.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).map(Map.Entry::getKey).get();
+
+		System.out.println(" max ix " + max);
+		
+		
+		
+		List<String> list1 = Arrays.asList("Jatin", "Goswami", "Sakhi");
+		List<String> list2 = Arrays.asList("Nitin", "Saching", "Meenakhsi");
+		List<String> list3 = Arrays.asList("Niavish", "Chetan", "Shubham");
+		List<List<String>> finalList = Arrays.asList(list1, list2, list3);
+		
+		
+		List<String> ans =
+		finalList.stream().flatMap(x -> x.stream()).collect(Collectors.toList());
+		
+		System.out.println(" "+ans);
+		
+		
+		//3:
+		List<Hosting> list = new ArrayList<>();
+		list.add(new Hosting(11, "liquidweb.com", 80500l));
+		list.add(new Hosting(23, "linode.com", 91000l));
+		list.add(new Hosting(3, "digitalocean.com", 120000l));
+		list.add(new Hosting(4, "aws.amazon.com", 200000l));
+		list.add(new Hosting(5, "mky1ong.com", 90300l));
+		list.add(new Hosting(6, "mk2yong.com", 120000l));
+		list.add(new Hosting(7, "mky4ong.com", 800077l));
+		list.add(new Hosting(8, "mky3ong.com", 1207000l));
+		list.add(new Hosting(9, "mkyo4ng.com", 800777700l));	
+		
+		
+		Optional<Hosting> emp =
+		list.stream()
+				.sorted(Comparator.comparing(Hosting::getWebsites)).findFirst();
+		
+		System.out.println(" emp is " + emp.get().toString());
+		
+		
+		Map<Integer, String> result1 = list.stream()
+				.collect(Collectors.toMap(Hosting::getId, Hosting::getName));
+		
+		System.out.println("Result1 --------------");
+		
+		
+		List<String> listt = Arrays.asList("Geeks", "GFG",
+                "GeeksforGeeks", "gfg");
+		
+		
+		listt.stream().flatMapToInt(str -> IntStream.of(str.length()))
+		.forEach(System.out::println);
+		
+		
+
+	}
+}
+
+
+
+
+class Hosting {
+
+	public Integer getId() {
+		return Id;
+	}
+
+	public void setId(Integer id) {
+		Id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public long getWebsites() {
+		return websites;
+	}
+
+	public void setWebsites(long websites) {
+		this.websites = websites;
+	}
+
+	private Integer Id;
+	private String name;
+	private Long websites;
+
+	public Hosting(Integer id, String name, Long websites) {
+		Id = id;
+		this.name = name;
+		this.websites = websites;
+	}
+
+}
