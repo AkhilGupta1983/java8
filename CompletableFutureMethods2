@@ -1,0 +1,72 @@
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+public class CompletableFutureSample {
+
+	public static void main(String args[]) throws InterruptedException, ExecutionException {
+
+		CompletableFuture<String> cf
+			= CompletableFuture
+						.supplyAsync(() -> "Hello")
+							.thenCompose(s -> CompletableFuture.supplyAsync(() -> s +" modified"));
+		System.out.println(" Compose result is " + cf.get());
+		
+		
+		CompletableFuture<Object> cf1 = CompletableFuture
+					.supplyAsync(() -> "Hello")
+						.thenApply((s) -> {
+								return s +" modified Again";
+						});
+	   System.out.println(" applyThen result is " + cf1.get());
+	   
+	   CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> "Hello");
+	   CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> "world");
+	   CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> "again");
+	   CompletableFuture<Void> res = CompletableFuture.allOf(future1,future2,future3);
+	   
+	   
+	   while(!future1.isDone() || !future2.isDone() || !future2.isDone()) {
+		   TimeUnit.SECONDS.sleep(2);
+		   System.out.println("Waiting for cmputation...");
+	   }
+	   System.out.println(" Combined resut is " + res.get());
+	   
+	   
+		
+
+	}
+
+	public Future<String> calAsync() {
+		CompletableFuture<String> future = new CompletableFuture<>();
+		CompletableFuture<String> res = future.supplyAsync(() -> "Hello!!!")
+					.thenApply(s -> s +"World");
+		return res;
+	}
+
+	
+	public Future<Void> calAsyncAccept() throws InterruptedException, ExecutionException {
+		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+		completableFuture.supplyAsync(() -> "Hello!!!");
+		
+		CompletableFuture<Void> futue = completableFuture.thenAccept(s -> System.out.println(" result is "+s));
+		return futue;
+		
+		//return futue.get();
+	}
+
+	
+	public Future<Void> calAsyncthenRun() throws InterruptedException, ExecutionException {
+		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+		completableFuture.supplyAsync(() -> "Hello!!!");
+		
+		CompletableFuture<Void> futue = completableFuture.thenRun(() -> System.out.println(" result is NOn retrurnable "));
+		return futue;
+		
+		//return futue.get();
+	}
+	
+}
