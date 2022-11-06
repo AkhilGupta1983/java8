@@ -1,0 +1,23 @@
+
+public class DefaultImpl {
+
+	public static void main(String args[]) {
+
+		TestInterface itr = () -> {
+			return 1000;
+		};
+
+		itr.testreturn();
+		System.out.println(" Return values is " + itr.testreturn());
+		itr.test();
+
+	}
+}
+
+interface TestInterface {
+	default void test() {
+		System.out.println(" Am from test Interfac");
+	}
+
+	int testreturn();
+}
