@@ -1,0 +1,54 @@
+
+interface Pair<K, V> {
+	public K getKey();
+
+	public V getValue();
+}
+
+class Orderedpair<K, V> implements Pair<K, V> {
+
+	private K key;
+	private V value;
+
+	public Orderedpair(K key, V value) {
+		this.key = key;
+		this.value = value;
+	}
+
+	@Override
+	public K getKey() {
+		return key;
+	}
+
+	@Override
+	public V getValue() {
+		return value;
+	}
+
+}
+
+class Employee2 {
+	private String name;
+
+	Employee2(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+}
+
+public class GenericMultipleTypeSample {
+
+	public static void main(String args[]) {
+		Orderedpair<String, Integer> p1 = new Orderedpair("Even", 100);
+		System.out.println(" k : " + p1.getKey());
+		System.out.println(" v : " + p1.getValue());
+
+		Orderedpair<String, Employee2> p3 = new Orderedpair<>("key", new Employee2("Ramesh"));
+		System.out.println(p3.getKey());
+		System.out.println(p3.getValue().getName());
+	}
+
+}
