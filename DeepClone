@@ -1,0 +1,92 @@
+
+public class ClonableExample {
+
+	public static void main(String args[]) throws CloneNotSupportedException {
+		
+		Resource resource = new Resource(11);
+		Employee oEmployee = new Employee("Akkhil", resource);
+		
+		Employee clonedEmployee = (Employee)oEmployee.clone();
+		
+		System.out.println(" "+ oEmployee.getResource().getScore() +" "
+				+ " " + clonedEmployee.getResource().getScore());
+		
+		
+		clonedEmployee.getResource().setScore(999);
+		
+		
+		System.out.println(" "+ oEmployee.getResource().getScore() +" "
+				+ " " + clonedEmployee.getResource().getScore());
+		
+		System.out.println("< -------------------- >");
+		
+		
+		
+		
+		
+	}
+
+}
+
+class Employee implements Cloneable {
+
+	private String name;
+	private Resource resource;
+
+	public Employee(String name, Resource resource) {
+		super();
+		this.name = name;
+		this.resource = resource;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+
+	/*protected Employee clone() throws CloneNotSupportedException {
+		return (Employee) super.clone();
+	}
+	*/
+	
+	protected Employee clone() throws CloneNotSupportedException {
+		Employee e = (Employee) super.clone();
+		Resource r = (Resource) resource.clone();
+		e.setResource(r);
+		return e;
+	}
+}
+
+class Resource implements Cloneable{
+
+	private int score;
+
+	public Resource(int score) {
+		super();
+		this.score = score;
+	}
+	
+	protected Resource clone() throws CloneNotSupportedException {
+		return (Resource) super.clone();
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+}
