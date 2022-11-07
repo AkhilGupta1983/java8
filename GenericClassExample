@@ -1,0 +1,33 @@
+
+class ProductA{
+	public String getProductName() {
+		return "Product A";
+	}
+}
+
+public class GeneriClass{
+	
+	public static void main(String args[]) throws InstantiationException, IllegalAccessException {
+		
+		TestGeneriClass<ProductA> factory = new TestGeneriClass(ProductA.class);
+		
+		ProductA productA = factory.createInstance();
+		
+		System.out.println(" : "+ productA.getProductName());
+	}
+	
+}
+
+
+ class TestGeneriClass<T> {
+
+	Class theClass=null;
+	
+	public TestGeneriClass(Class theClass){
+		this.theClass=theClass;
+	}
+	
+	public T createInstance() throws InstantiationException, IllegalAccessException {
+		return (T)this.theClass.newInstance();
+	}
+}
