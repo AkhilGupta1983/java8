@@ -1,0 +1,59 @@
+
+interface MinMax<T extends Comparable<T>> {
+	T min();
+
+	T max();
+}
+
+class MinMaxImpl<T extends Comparable<T>> implements MinMax<T> {
+
+	T[] vals;
+
+	MinMaxImpl(T[] o) {
+		vals = o;
+	}
+
+	@Override
+	public T min() {
+		T v = vals[0];
+		for (T o : vals) {
+			if (o.compareTo(v) > 0) {
+				v = o;
+			}
+		}
+		return v;
+	}
+
+	@Override
+	public T max() {
+		T v = vals[0];
+		for (T o : vals) {
+			if (o.compareTo(v) < 0) {
+				v = o;
+			}
+		}
+		return v;
+	}
+
+}
+
+public class GenericsInterface {
+
+	public static void main(String args[]) {
+
+		Integer intOfArray[] = { 3, 6, 2, 8, 6 };
+
+		MinMaxImpl<Integer> intMinMax = new MinMaxImpl<Integer>(intOfArray);
+
+		System.out.println(" int max : " + intMinMax.max());
+		System.out.println(" int min : " + intMinMax.min());
+
+		String strOfArray[] = { "abc", "xyz", "pqr" };
+		MinMaxImpl<String> intMinMaxStr = new MinMaxImpl<String>(strOfArray);
+
+		System.out.println(" int max : " + intMinMaxStr.max());
+		System.out.println(" int min : " + intMinMaxStr.min());
+
+	}
+
+}
